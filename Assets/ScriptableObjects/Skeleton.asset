@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f1e622ea6d9d74d83ed935e2e31531, type: 3}
+  m_Name: Skeleton
+  m_EditorClassIdentifier: 
+  enemyName: Skeleton
+  baseHealth: 5
+  baseStr: 1
+  baseInitiative: 1
+  enemyBattleVisualPrefab: {fileID: 3409359283925749966, guid: 7e7bc8de35da14145a5914d19d068305,
+    type: 3}
+  enemyDungeonVisualPrefab: {fileID: 8265860832766441687, guid: e65eea4a597c5354ea2d7ae6dab0b29d,
+    type: 3}
