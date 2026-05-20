@@ -1,119 +1,59 @@
 # Sanctuary of the Flame 🔥 | Game Development Portfolio
 
-**Sanctuary of the Flame** is a 2.5D RPG developed in Unity, featuring a turn-based combat system, party management, and dungeon exploration. This repository showcases the **C# architecture and systems design** behind the game.
+[![Unity](https://img.shields.io/badge/Unity-2022.3.25f1-000000.svg?logo=unity)](https://unity.com/)
+[![C#](https://img.shields.io/badge/C%23-Programming-239120.svg?logo=c-sharp)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![Architecture](https://img.shields.io/badge/Architecture-SOLID%20%7C%20Event--Driven-blue.svg)]()
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)]()
 
-> **Note:** This is a code portfolio. Asset files (art, audio, models, animations) are not included in the repository. Game files are available on [Itch.io](https://joshe1129.itch.io/sanctuary-of-the-flame).
+**Sanctuary of the Flame** is a 2.5D RPG developed in Unity. This repository serves as a **Code Portfolio**, showcasing advanced software engineering principles, clean code architecture, and robust game systems design.
 
----
-
-## 📚 Project Overview
-
-This project demonstrates:
-- **Turn-based combat system** with state management
-- **Party management system** with character persistence
-- **Enemy AI** with state machine patterns (Idle, Patrol, Chase, Attack)
-- **Input handling** using Unity's new InputSystem
-- **Manager pattern** for game state, party, and enemies
-- **Clean architecture** with separation of concerns
+> **Note:** This repository contains the source code. Asset files (art, audio, models) are excluded. You can play the full compiled game on [Itch.io](https://joshe1129.itch.io/sanctuary-of-the-flame).
 
 ---
 
-## 🎮 Game Features
+## 🏗️ Architectural Highlights
 
-- **Turn-Based Combat**: Strategic battle system with player and enemy actions
-- **Party Recruitment**: Rescue and recruit allies to strengthen your team
-- **Dungeon Exploration**: 2.5D world combining 3D environments with 2D pixel art characters
-- **Enemy AI**: Intelligent enemy behavior with detection and pursuit systems
-- **Party Persistence**: Save and load party state across scenes
-- **HUD Management**: Dynamic UI displaying party stats and battle information
+The project was heavily refactored to adhere to professional industry standards, focusing on decoupling and performance:
 
----
-
-## 💻 Code Architecture
-
-### Core Systems
-
-| System | File | Responsibility |
-|--------|------|-------------------|
-| **Battle System** | `BattleSystem.cs` | Manages turn order, action execution, win/loss conditions |
-| **Party Manager** | `PartyManager.cs` | Singleton managing party composition and persistence |
-| **Enemy Manager** | `EnemyManager.cs` | Enemy spawning, state tracking, respawn logic |
-| **Player Controller** | `PlayerController.cs` | Input handling and overworld movement |
-| **Character Manager** | `CharacterManager.cs` | NPC recruitment and party member visuals |
-| **Game Manager** | `GameManager.cs` | Global game state (pause, scene loading, quit) |
-
-### Supporting Systems
-
-- **BattleVisuals.cs**: Visual feedback and animations for battles
-- **EnemySimpleAI.cs**: State-based AI with NavMesh pathfinding
-- **MemberFollowAI.cs**: Party member follow mechanics in overworld
-- **OverworldVisuals.cs**: Dynamic HUD updates for party status
-- **AnimationManager.cs**: Animation state management
-- **EncounterSystem.cs**: Enemy encounter generation with level scaling
+- **Service Locator Pattern (`ServiceLocator.cs`)**: Replaced tight coupling and brittle Singletons with a globally accessible registry for core managers (`IPartyManager`, `IGameManager`, `IAudioManager`, etc.).
+- **Event-Driven Architecture (`GameEvents.cs`)**: Implemented an Event Bus pattern using C# `Action` delegates to handle cross-system communication (e.g., triggering battles, winning scenes) without direct dependencies.
+- **Object Pooling (`ObjectPooler.cs`)**: Eliminated Garbage Collection spikes during combat by pooling visual effects and battle entities, dramatically improving runtime performance.
+- **Centralized Constants (`GameConstants.cs`)**: Eradicated "magic strings" for Scene names, Animator parameters, and PlayerPrefs keys to ensure type safety and ease of refactoring.
 
 ---
 
-## 🛠️ Technical Stack
+## 🎮 Core Game Systems
 
-- **Engine**: Unity 2022.3.25f1
-- **Language**: C# (.NET 4.7.1)
-- **Input System**: New InputSystem (PlayerControls)
-- **UI Framework**: TextMeshPro, Unity UI Sliders
-- **AI System**: NavMesh pathfinding
-- **Architecture Patterns**: 
-  - Singleton (PartyManager, EnemyManager)
-  - State Machine (BattleSystem, EnemySimpleAI)
-  - Manager Pattern (GameManager, PartyManager)
+| System | Key Classes | Responsibility |
+|--------|-------------|-------------------|
+| **Turn-Based Combat** | `BattleSystem.cs`, `CombatResolver.cs` | Manages turn order, action execution, and state transitions using Coroutines. |
+| **Dynamic UI Feedback** | `BattleUIManager.cs`, `UIHoverHandler.cs` | Handles reactive combat UI, including dynamic portrait switching and targeted enemy spotlights using event delegates. |
+| **Data Persistence** | `PartyManager.cs`, `EnemyManager.cs` | Manages party composition, stats, and overworld persistence across scene loads. |
+| **Enemy AI** | `EnemySimpleAI.cs`, `MemberFollowAI.cs` | State-based AI with NavMesh pathfinding for overworld pursuit and party following mechanics. |
 
 ---
 
 ## 📂 Code Organization
 
-```
-Assets/Scripts/
-├── Systems/
-│   ├── BattleSystem.cs          # Turn-based combat engine
-│   ├── PartyManager.cs          # Party data management
-│   └── EnemyManager.cs          # Enemy spawning & persistence
-├── Managers/
-│   ├── GameManager.cs           # Global game state
-│   ├── CharacterManager.cs      # NPC recruitment
-│   └── AnimationManager.cs      # Animation utilities
-├── AI/
-│   ├── EnemySimpleAI.cs         # Enemy behavior (state machine)
-│   └── MemberFollowAI.cs        # Party member following
-├── UI/
-│   ├── BattleVisuals.cs         # Battle visual feedback
-│   └── OverworldVisuals.cs      # Party HUD updates
-└── Other/
-    ├── PlayerController.cs      # Input & movement
-    ├── EncounterSystem.cs       # Enemy encounters
-    ├── PartyMemberInfo.cs       # Data container
-    └── EnemyInfo.cs             # Enemy definitions
-```
+All scripts are located in `Assets/Scripts/` and utilize interfaces to ensure SOLID principles (specifically Dependency Inversion):
+
+- **Interfaces**: `IPartyManager`, `IGameManager`, `IEnemyManager`, `IAudioManager`, `IObjectPooler`
+- **Core Managers**: `ServiceLocator`, `GameManager`, `AudioManager`, `GameEvents`, `GameConstants`
+- **Battle Systems**: `BattleSystem`, `BattleEntities`, `BattleVisuals`, `BattleUIManager`
+- **Overworld Systems**: `PlayerController`, `CharacterManager`, `OverworldVisuals`, `EncounterSystem`
 
 ---
 
-## 🎯 Key Programming Concepts Demonstrated
+## 🚀 Key Programming Skills Demonstrated
 
-- **State Management**: Battle states, enemy states, game pause states
-- **Data Structures**: Lists, arrays for party and enemy management
-- **Event Handling**: InputSystem callbacks, scene loading events
-- **Coroutines**: Turn-based routine management and animations
-- **Object Pooling**: Enemy respawn system using saved data
-- **Inheritance & Polymorphism**: Base entity systems for battles
-- **Singleton Pattern**: Persistent manager instances across scenes
-- **Scriptable Objects**: PartyMemberInfo, EnemyInfo for data-driven design
+1. **SOLID Principles**: Heavy use of interfaces (`Dependency Inversion`) and distinct manager responsibilities (`Single Responsibility`).
+2. **Memory Management**: Custom Object Pooler for high-frequency instantiation.
+3. **Reactive UI**: UI elements update strictly via event subscriptions, keeping logic decoupled from the view.
+4. **Data-Driven Design**: Use of `ScriptableObjects` (`EnemyInfo`, `PartyMemberInfo`) to define stats without hardcoding.
 
 ---
 
-## 🎮 Play the Game
+## 🔗 Links
 
-The complete game with all assets is available on Itch.io:  
-👉 [**Play Sanctuary of the Flame on Itch.io**](https://joshe1129.itch.io/sanctuary-of-the-flame)
-
----
-
-## 📝 License
-
-This project is for portfolio purposes. Game assets and design are original work.
+- 👉 **[Play the Game on Itch.io](https://joshe1129.itch.io/sanctuary-of-the-flame)**
+- 📧 **Contact**: [Insert your LinkedIn or Email here]
