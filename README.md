@@ -7,7 +7,7 @@
 
 **Sanctuary of the Flame** is a 2.5D RPG developed in Unity. This repository serves as a **Code Portfolio**, showcasing advanced software engineering principles, clean code architecture, and robust game systems design.
 
-> **Note:** This repository contains the source code. Asset files (art, audio, models) are excluded. You can play the full compiled game on [Itch.io](https://joshe1129.itch.io/sanctuary-of-the-flame).
+> **Note:** This repository contains the source code. Asset files (art, audio, models) are excluded. You can play the full compiled game on [Itch.io](https://josesalinas-dev.itch.io/sanctuary-of-the-flame).
 
 ---
 
@@ -55,5 +55,5 @@ All scripts are located in `Assets/Scripts/` and utilize interfaces to ensure SO
 
 ## 🔗 Links
 
-- 👉 **[Play the Game on Itch.io](https://joshe1129.itch.io/sanctuary-of-the-flame)**
-- 📧 **Contact**: [Insert your LinkedIn or Email here]
+- 👉 **[Play the Game on Itch.io](https://josesalinas-dev.itch.io/sanctuary-of-the-flame)**
+- 📧 **Contact**: jose.salinas.dev@outlook.com | [LinkedIn: José Salinas](https://www.linkedin.com/in/josesalinas-dev/)
