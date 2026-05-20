@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Singleton manager that handles party member data and persistence across scenes.
@@ -43,7 +44,7 @@ public class PartyManager : MonoBehaviour, IPartyManager
     /// <param name="mode">The scene load mode.</param>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu")
+        if (scene.name == GameConstants.SCENE_MAIN_MENU)
         {
             Destroy(gameObject);
         }

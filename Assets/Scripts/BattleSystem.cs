@@ -48,6 +48,9 @@ public class BattleSystem : MonoBehaviour
             uiManager.OnAttackSelected += HandleAttackSelection;
             uiManager.OnRunSelected += HandleRunSelection;
             uiManager.OnEnemyTargetSelected += HandleEnemySelection;
+            uiManager.OnEnemyHoverEntered += HandleEnemyHoverEntered;
+            uiManager.OnEnemyHoverExited += HandleEnemyHoverExited;
+            uiManager.OnForceAllEnemySpotlightsOff += HandleForceAllEnemySpotlightsOff;
         }
         else
         {
@@ -61,7 +64,8 @@ public class BattleSystem : MonoBehaviour
         currentPartyHero = 0;
         if (uiManager != null && playerBattlers.Count > 0)
         {
-            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name);
+            playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(true);
+            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name, playerBattlers[currentPartyHero].Portrait);
         }
     }
 
@@ -72,6 +76,9 @@ public class BattleSystem : MonoBehaviour
             uiManager.OnAttackSelected -= HandleAttackSelection;
             uiManager.OnRunSelected -= HandleRunSelection;
             uiManager.OnEnemyTargetSelected -= HandleEnemySelection;
+            uiManager.OnEnemyHoverEntered -= HandleEnemyHoverEntered;
+            uiManager.OnEnemyHoverExited -= HandleEnemyHoverExited;
+            uiManager.OnForceAllEnemySpotlightsOff -= HandleForceAllEnemySpotlightsOff;
         }
     }
 
@@ -85,7 +92,7 @@ public class BattleSystem : MonoBehaviour
         for (int i = 0; i < currentParty.Count; i++)
         {
             BattleEntities tempEntity = new BattleEntities();
-            tempEntity.SetEntityValues(currentParty[i].memberName, currentParty[i].currentHealth, currentParty[i].maxHealth, currentParty[i].strength, currentParty[i].initiative, currentParty[i].level, true);
+            tempEntity.SetEntityValues(currentParty[i].memberName, currentParty[i].currentHealth, currentParty[i].maxHealth, currentParty[i].strength, currentParty[i].initiative, currentParty[i].level, true, currentParty[i].sprite);
 
             var pooler = ServiceLocator.GetService<IObjectPooler>();
             BattleVisuals tempBattleVisual;
@@ -151,6 +158,7 @@ public class BattleSystem : MonoBehaviour
 
     private void HandleRunSelection()
     {
+        playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(false);
         State = BattleState.Selection;
         BattleEntities currentPlayerEntity = playerBattlers[currentPartyHero];
         currentPlayerEntity.BattleAction = BattleEntities.Action.Run;
@@ -164,12 +172,14 @@ public class BattleSystem : MonoBehaviour
         }
         else
         {
-            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name);
+            playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(true);
+            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name, playerBattlers[currentPartyHero].Portrait);
         }
     }
 
     private void HandleEnemySelection(int currentEnemyIndex)
     {
+        playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(false);
         BattleEntities currentPlayerEntity = playerBattlers[currentPartyHero];
         currentPlayerEntity.SetTarget(allBattlers.IndexOf(enemyBattlers[currentEnemyIndex]));
         currentPlayerEntity.BattleAction = BattleEntities.Action.Attack;
@@ -183,7 +193,39 @@ public class BattleSystem : MonoBehaviour
         }
         else
         {
-            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name);
+            playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(true);
+            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name, playerBattlers[currentPartyHero].Portrait);
+        }
+    }
+
+    private void HandleEnemyHoverEntered(int index)
+    {
+        if (index >= 0 && index < enemyBattlers.Count)
+        {
+            enemyBattlers[index].BattleVisuals.ToggleSpotlight(true);
+        }
+    }
+
+    private void HandleEnemyHoverExited(int index)
+    {
+        if (index >= 0 && index < enemyBattlers.Count)
+        {
+            enemyBattlers[index].BattleVisuals.ToggleSpotlight(false);
+        }
+    }
+
+    /// <summary>
+    /// Forces all enemy spotlights off — called when the selection menu opens/closes
+    /// to prevent spotlights from staying stuck between hero turns or after clicking.
+    /// </summary>
+    private void HandleForceAllEnemySpotlightsOff()
+    {
+        for (int i = 0; i < enemyBattlers.Count; i++)
+        {
+            if (enemyBattlers[i].BattleVisuals != null)
+            {
+                enemyBattlers[i].BattleVisuals.ToggleSpotlight(false);
+            }
         }
     }
 
@@ -224,7 +266,11 @@ public class BattleSystem : MonoBehaviour
         {
             uiManager.ShowBattleInfoPanel(false);
             currentPartyHero = 0;
-            uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name);
+            if (playerBattlers.Count > 0)
+            {
+                playerBattlers[currentPartyHero].BattleVisuals.ToggleSpotlight(true);
+                uiManager.ShowBattleMenu(playerBattlers[currentPartyHero].Name, playerBattlers[currentPartyHero].Portrait);
+            }
         }
 
         yield return null;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Manages NPC recruitment and party member visuals in the overworld.
@@ -10,16 +11,15 @@ using RPGInterfaces;
 public class CharacterManager : MonoBehaviour
 {
     [SerializeField] private GameObject joinPopUp;
-    [SerializeField] private GameObject AvatarsHUD;
+    [SerializeField] private GameObject avatarsHUD;
     [SerializeField] private TextMeshProUGUI joinPopUpText;
     private IPartyManager partyManager;
 
-    private bool infrontOfPartyMember;
+    private bool inFrontOfPartyMember;
     private GameObject joinableMember;
     private PlayerControls playerControls;
     private List<GameObject> overWorldCharacters = new List<GameObject>();
 
-    private const string NPC_JOINABLE_TAG = "NPCJoinable";
     private const string PARTY_JOINED_MESSAGE = " Joined The Party!";
 
     /// <summary>
@@ -68,13 +68,12 @@ public class CharacterManager : MonoBehaviour
     {
         if (joinableMember == null)
         {
-            Debug.Log("joinableMember is null");
             return;
         }
-        if (infrontOfPartyMember && joinableMember != null)
+        if (inFrontOfPartyMember && joinableMember != null)
         {
             JoinMember(joinableMember.GetComponent<JoinableCharacterScript>().membertoJoin);
-            infrontOfPartyMember = false;
+            inFrontOfPartyMember = false;
             joinableMember = null;
         }
     }
@@ -108,9 +107,9 @@ public class CharacterManager : MonoBehaviour
         }
         overWorldCharacters.Clear();
         List<PartyMember> currentParty = partyManager.GetCurrentParty();
-        if (AvatarsHUD != null)
+        if (avatarsHUD != null)
         {
-            var overworldVisuals = AvatarsHUD.GetComponent<OverworldVisuals>();
+            var overworldVisuals = avatarsHUD.GetComponent<OverworldVisuals>();
             if (overworldVisuals != null)
             {
                 overworldVisuals.UpdateOverworldVisuals();
@@ -162,11 +161,11 @@ public class CharacterManager : MonoBehaviour
     /// <param name="other">The collider that entered the trigger.</param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == NPC_JOINABLE_TAG)
+        if (other.gameObject.tag == GameConstants.TAG_NPC_JOINABLE)
         {
-            infrontOfPartyMember = true;
+            inFrontOfPartyMember = true;
             joinableMember = other.gameObject;
-            joinableMember.GetComponent<JoinableCharacterScript>().ShowInteractPrompt(infrontOfPartyMember);
+            joinableMember.GetComponent<JoinableCharacterScript>().ShowInteractPrompt(inFrontOfPartyMember);
         }
     }
 
@@ -177,9 +176,9 @@ public class CharacterManager : MonoBehaviour
     /// <param name="other">The collider that exited the trigger.</param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == NPC_JOINABLE_TAG)
+        if (other.gameObject.tag == GameConstants.TAG_NPC_JOINABLE)
         {
-            infrontOfPartyMember = false;
+            inFrontOfPartyMember = false;
             if (joinableMember != null)
             {
                 var joinScript = joinableMember.GetComponent<JoinableCharacterScript>();

@@ -16,6 +16,7 @@ public class BattleUIManager : MonoBehaviour
 
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI actionText;
+    [SerializeField] private UnityEngine.UI.Image portraitImage;
     [SerializeField] private TextMeshProUGUI battleInfoText;
     [SerializeField] private GameObject[] enemySelectionButtons;
 
@@ -23,14 +24,37 @@ public class BattleUIManager : MonoBehaviour
     public event Action OnAttackSelected;
     public event Action OnRunSelected;
     public event Action<int> OnEnemyTargetSelected;
+    public event Action<int> OnEnemyHoverEntered;
+    public event Action<int> OnEnemyHoverExited;
+    public event Action OnForceAllEnemySpotlightsOff;
+
+    private void Start()
+    {
+        for (int i = 0; i < enemySelectionButtons.Length; i++)
+        {
+            UIHoverHandler hoverHandler = enemySelectionButtons[i].gameObject.AddComponent<UIHoverHandler>();
+            hoverHandler.index = i;
+            hoverHandler.OnHoverEntered += (idx) => OnEnemyHoverEntered?.Invoke(idx);
+            hoverHandler.OnHoverExited += (idx) => OnEnemyHoverExited?.Invoke(idx);
+        }
+    }
 
     /// <summary>
     /// Displays the main battle action menu for a specific battler.
     /// </summary>
     /// <param name="battlerName">The name of the battler taking the turn.</param>
-    public void ShowBattleMenu(string battlerName)
+    public void ShowBattleMenu(string battlerName, Sprite portraitSprite)
     {
         actionText.text = battlerName + "'s Action: ";
+        if (portraitImage != null && portraitSprite != null)
+        {
+            portraitImage.sprite = portraitSprite;
+            portraitImage.gameObject.SetActive(true);
+        }
+        else if (portraitImage != null)
+        {
+            portraitImage.gameObject.SetActive(false);
+        }
         battleMenu.SetActive(true);
         enemySelectionMenu.SetActive(false);
     }
@@ -41,6 +65,8 @@ public class BattleUIManager : MonoBehaviour
     /// <param name="enemyBattlers">The list of alive enemies.</param>
     public void ShowEnemySelectionMenu(List<BattleEntities> enemyBattlers)
     {
+        // Force all spotlights off before reopening (prevents stuck lights between hero turns)
+        OnForceAllEnemySpotlightsOff?.Invoke();
         battleMenu.SetActive(false);
         SetEnemySelectionButtons(enemyBattlers);
         enemySelectionMenu.SetActive(true);
@@ -88,6 +114,8 @@ public class BattleUIManager : MonoBehaviour
 
     public void HideEnemySelectionMenu()
     {
+        // Force all spotlights off when the selection menu closes
+        OnForceAllEnemySpotlightsOff?.Invoke();
         enemySelectionMenu.SetActive(false);
     }
 

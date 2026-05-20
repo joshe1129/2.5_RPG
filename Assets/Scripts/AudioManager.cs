@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Singleton manager for handling audio settings and mixer control.
@@ -16,11 +17,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
 
-    private const string MASTER_VOLUME_KEY = "MasterVolume";
-    private const string MUSIC_VOLUME_KEY = "MusicVolume";
-    private const string SFX_VOLUME_KEY = "SFXVolume";
-    private const string UI_VOLUME_KEY = "UIVolume";
-    private const string AUDIO_MUTED_KEY = "AudioMuted";
+    // Constants moved to GameConstants
     private const float MUTE_DB = -80f;
 
     private float cachedMasterVolume = 0.3f;
@@ -71,11 +68,11 @@ public class AudioManager : MonoBehaviour, IAudioManager
     /// </summary>
     private void LoadAudioState()
     {
-        cachedMasterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 0.3f);
-        cachedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 0.3f);
-        cachedUIVolume = PlayerPrefs.GetFloat(UI_VOLUME_KEY, 0.3f);
-        cachedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 0.3f);
-        cachedMuted = PlayerPrefs.GetInt(AUDIO_MUTED_KEY, 0) == 1;
+        cachedMasterVolume = PlayerPrefs.GetFloat(GameConstants.PREFS_MASTER_VOLUME, 0.3f);
+        cachedMusicVolume = PlayerPrefs.GetFloat(GameConstants.PREFS_MUSIC_VOLUME, 0.3f);
+        cachedUIVolume = PlayerPrefs.GetFloat(GameConstants.PREFS_UI_VOLUME, 0.3f);
+        cachedSFXVolume = PlayerPrefs.GetFloat(GameConstants.PREFS_SFX_VOLUME, 0.3f);
+        cachedMuted = PlayerPrefs.GetInt(GameConstants.PREFS_AUDIO_MUTED, 0) == 1;
     }
 
     /// <summary>
@@ -114,7 +111,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     public void SetMasterVolume(float volume)
     {
         cachedMasterVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, cachedMasterVolume);
+        PlayerPrefs.SetFloat(GameConstants.PREFS_MASTER_VOLUME, cachedMasterVolume);
 
         if (!cachedMuted)
         {
@@ -131,7 +128,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     public void SetMusicVolume(float volume)
     {
         cachedMusicVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, cachedMusicVolume);
+        PlayerPrefs.SetFloat(GameConstants.PREFS_MUSIC_VOLUME, cachedMusicVolume);
         audioMixer.SetFloat("MusicVolume", ConvertLinearToDecibels(cachedMusicVolume));
     }
 
@@ -143,7 +140,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     public void SetUIVolume(float volume)
     {
         cachedUIVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(UI_VOLUME_KEY, cachedUIVolume);
+        PlayerPrefs.SetFloat(GameConstants.PREFS_UI_VOLUME, cachedUIVolume);
         audioMixer.SetFloat("UIVolume", ConvertLinearToDecibels(cachedUIVolume));
     }
 
@@ -155,7 +152,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     public void SetSFXVolume(float volume)
     {
         cachedSFXVolume = Mathf.Clamp01(volume);
-        PlayerPrefs.SetFloat(SFX_VOLUME_KEY, cachedSFXVolume);
+        PlayerPrefs.SetFloat(GameConstants.PREFS_SFX_VOLUME, cachedSFXVolume);
         audioMixer.SetFloat("SFXVolume", ConvertLinearToDecibels(cachedSFXVolume));
     }
     
@@ -175,7 +172,7 @@ public class AudioManager : MonoBehaviour, IAudioManager
     public void SetMuteState(bool mute)
     {
         cachedMuted = mute;
-        PlayerPrefs.SetInt(AUDIO_MUTED_KEY, mute ? 1 : 0);
+        PlayerPrefs.SetInt(GameConstants.PREFS_AUDIO_MUTED, mute ? 1 : 0);
 
         float masterDb = mute
             ? MUTE_DB

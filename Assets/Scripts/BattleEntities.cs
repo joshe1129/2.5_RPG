@@ -18,6 +18,7 @@ public class BattleEntities
     public int Strength;
     public int Initiative;
     public bool IsPlayer;
+    public UnityEngine.Sprite Portrait;
     public BattleVisuals BattleVisuals;
     public int Target;
 
@@ -31,7 +32,7 @@ public class BattleEntities
     /// <param name="initiative">The turn order priority of the entity.</param>
     /// <param name="level">The level of the entity.</param>
     /// <param name="isPlayer">Whether this entity belongs to the player's party.</param>
-    public void SetEntityValues(string name, int currentHealth, int maxHealth, int strength, int initiative, int level, bool isPlayer)
+    public void SetEntityValues(string name, int currentHealth, int maxHealth, int strength, int initiative, int level, bool isPlayer, UnityEngine.Sprite portrait = null)
     {
         Name = name;
         CurrentHealth = currentHealth;
@@ -40,6 +41,7 @@ public class BattleEntities
         Initiative = initiative;
         IsPlayer = isPlayer;
         Level = level;
+        Portrait = portrait;
     }
 
     /// <summary>

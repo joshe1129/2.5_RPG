@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Manages game-wide functionality including pause/resume, scene loading, and application quit.
@@ -78,7 +79,7 @@ public class GameManager : MonoBehaviour, IGameManager
     /// </summary>
     private void Start()
     {
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (SceneManager.GetActiveScene().name == GameConstants.SCENE_MAIN_MENU)
         {
             return;
         }

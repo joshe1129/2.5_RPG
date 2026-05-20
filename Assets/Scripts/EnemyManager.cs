@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Singleton manager that handles enemy generation, spawning, and persistence in dungeons.
@@ -53,7 +54,7 @@ public class EnemyManager : MonoBehaviour, IEnemyManager
     /// <param name="mode">The scene load mode (single or additive).</param>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu")
+        if (scene.name == GameConstants.SCENE_MAIN_MENU)
         {
             Destroy(gameObject);  // Destruye este objeto si es la escena deseada
             return;
@@ -94,7 +95,7 @@ public class EnemyManager : MonoBehaviour, IEnemyManager
         dgSpawnPoints.Clear();
         if (dgSpawnPoints.Count == 0)
         {
-            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag(GameConstants.TAG_SPAWN_POINT);
             foreach (GameObject spawnPoint in spawnPoints)
             {
                 dgSpawnPoints.Add(spawnPoint.transform);
@@ -172,7 +173,7 @@ public class EnemyManager : MonoBehaviour, IEnemyManager
     {
         savedDGEnemiesData.Clear();
         dgEnemyAttacker = enemyAttackerTransform.position;
-        GameObject[] tempEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] tempEnemies = GameObject.FindGameObjectsWithTag(GameConstants.TAG_ENEMY);
         foreach (GameObject tempEnemy in tempEnemies)
         {
             int prefabIndex = tempEnemy.GetComponent<EnemySimpleAI>().prefabIndex;

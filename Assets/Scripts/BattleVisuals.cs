@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using RPGInterfaces;
+using RPG.Core;
 
 /// <summary>
 /// Handles visual feedback and animations for battle characters.
@@ -9,14 +10,13 @@ using RPGInterfaces;
 public class BattleVisuals : MonoBehaviour
 {
     [SerializeField] private Slider healthBar;
+    [SerializeField] private GameObject spotlight;
 
     private int currentHealth;
     private int maxHealth;
     private Animator animator;
 
-    private const string IS_ATTACKING_PARAM = "isAttacking";
-    private const string IS_DEATH_PARAM = "isDeath";
-    private const string IS_HIT_PARAM = "isHit";
+    // Constants moved to GameConstants
     
     /// <summary>
     /// Initializes the animator component reference on awake.
@@ -59,6 +59,9 @@ public class BattleVisuals : MonoBehaviour
         this.currentHealth = currentHealth;
         if (currentHealth <= 0)
         {
+            // Immediately hide spotlight and health bar when the entity dies
+            ToggleSpotlight(false);
+            if (healthBar != null) healthBar.gameObject.SetActive(false);
             PlayDeathAnimation();
             StartCoroutine(ReturnToPoolCoroutine(5f));
         }
@@ -85,7 +88,7 @@ public class BattleVisuals : MonoBehaviour
     /// </summary>
     public void PlayAttackAnimation()
     {
-        animator.SetTrigger(IS_ATTACKING_PARAM);
+        animator.SetTrigger(GameConstants.ANIM_PARAM_IS_ATTACKING);
     }
 
     /// <summary>
@@ -94,7 +97,7 @@ public class BattleVisuals : MonoBehaviour
     /// </summary>
     public void PlayHitAnimation()
     {
-        animator.SetTrigger(IS_HIT_PARAM);
+        animator.SetTrigger(GameConstants.ANIM_PARAM_IS_HIT);
     }
 
     /// <summary>
@@ -103,6 +106,17 @@ public class BattleVisuals : MonoBehaviour
     /// </summary>
     public void PlayDeathAnimation()
     {
-        animator.SetTrigger(IS_DEATH_PARAM);
+        animator.SetTrigger(GameConstants.ANIM_PARAM_IS_DEATH);
+    }
+
+    /// <summary>
+    /// Toggles the spotlight visual indicator under the character.
+    /// </summary>
+    public void ToggleSpotlight(bool active)
+    {
+        if (spotlight != null)
+        {
+            spotlight.SetActive(active);
+        }
     }
 }
